@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <!-- ===================== HOME (feed list) ===================== -->
+    <section id="view-home" class="view">
+      <header class="topbar">
+        <button class="icon-btn" id="btn-settings" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 13a7.5 7.5 0 0 0 .1-2l2-1.5-2-3.5-2.4 1a7.6 7.6 0 0 0-1.7-1l-.4-2.5h-4l-.4 2.5a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.5L4 11a7.5 7.5 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7.6 7.6 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.6 7.6 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+
+        <div class="segmented">
+          <button class="seg" id="seg-all" title="All posts" aria-label="All posts">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+          </button>
+          <span class="seg-count" id="total-count">0</span>
+          <button class="seg" id="seg-star" title="Starred" aria-label="Starred">
+            <svg viewBox="0 0 24 24"><path d="m12 3 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19l1-5.8L3.6 9.1l5.8-.8L12 3Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </button>
+        </div>
+
+        <div class="topbar-right">
+          <button class="icon-btn" id="btn-add" title="Add feed" aria-label="Add feed">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </button>
+          <button class="icon-btn" id="btn-mark-all" title="Mark all read" aria-label="Mark all read">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8 12 2.5 2.5L16 9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="searchbar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <input id="home-search" type="text" placeholder="Search all posts..." />
+      </div>
+
+      <div class="scroll" id="home-list"></div>
+      <div class="status" id="home-status"></div>
+    </section>
+
+    <!-- ===================== FEED (entry list) ===================== -->
+    <section id="view-feed" class="view hidden">
+      <header class="topbar feed-topbar">
+        <button class="icon-btn" id="btn-back" title="Back" aria-label="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="feed-title">
+          <span class="avatar" id="feed-avatar"></span>
+          <span id="feed-name">Feed</span>
+        </div>
+        <span class="feed-count" id="feed-count"></span>
+      </header>
+
+      <div class="searchbar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <input id="feed-search" type="text" placeholder="Search..." />
+      </div>
+
+      <div class="toolbar">
+        <button class="tool" id="btn-filter">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>
+          <span id="filter-label">All</span>
+        </button>
+        <button class="tool" id="btn-feed-mark-all" title="Mark all read in this feed">
+          <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Mark all read</span>
+        </button>
+      </div>
+
+      <div class="scroll" id="feed-list"></div>
+    </section>
+
+    <!-- ===================== SETTINGS ===================== -->
+    <section id="view-settings" class="view hidden">
+      <header class="topbar">
+        <button class="icon-btn" id="btn-settings-back" title="Back" aria-label="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="feed-title"><span id="settings-name">Settings</span></div>
+        <span></span>
+      </header>
+
+      <div class="scroll settings-scroll">
+        <div class="setting-row">
+          <div>
+            <div class="setting-title">Desktop notifications</div>
+            <div class="setting-sub">Notify when new items arrive</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="set-notifications" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <div class="setting-title">Check every</div>
+            <div class="setting-sub">How often feeds are polled</div>
+          </div>
+          <select id="set-interval">
+            <option value="15">15 min</option>
+            <option value="30">30 min</option>
+            <option value="60">60 min</option>
+            <option value="120">2 hours</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <button class="secondary-btn" id="btn-refresh">Check now</button>
+        </div>
+
+        <div class="section-label">Feeds</div>
+        <div id="feed-manage-list"></div>
+
+        <div class="add-feed-row">
+          <input id="add-feed-input" type="text" placeholder="Feed or site URL..." />
+          <button class="primary-btn" id="btn-add-confirm">Add</button>
+        </div>
+        <div class="add-error" id="add-error"></div>
+      </div>
+    </section>
+
+    <!-- ===================== EDIT FEED ===================== -->
+    <section id="view-edit" class="view hidden">
+      <header class="topbar">
+        <button class="icon-btn" id="btn-edit-back" title="Back" aria-label="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="feed-title"><span>Edit feed</span></div>
+        <span></span>
+      </header>
+
+      <div class="scroll settings-scroll">
+        <div class="field">
+          <label class="field-label" for="edit-title">Title</label>
+          <input id="edit-title" type="text" placeholder="Custom title" />
+        </div>
+        <div class="field">
+          <label class="field-label" for="edit-url">Feed URL</label>
+          <input id="edit-url" type="text" placeholder="https://..." />
+        </div>
+        <div class="add-error" id="edit-error"></div>
+        <div class="edit-actions">
+          <button class="secondary-btn" id="btn-edit-cancel">Cancel</button>
+          <button class="primary-btn" id="btn-edit-save">Save</button>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
