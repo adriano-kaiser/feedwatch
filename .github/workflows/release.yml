@@ -12,41 +12,45 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out
-        uses: actions/checkout@v4
-
-      - name: Read version
-        id: meta
+      - name: Package and publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+
+          git clone --depth 1 --branch "${GITHUB_REF_NAME}" \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" src
+          cd src
+
           VERSION=$(jq -r .version manifest.json)
           SHORT_SHA="${GITHUB_SHA::7}"
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
-          echo "tag=v${VERSION}-${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          TAG="v${VERSION}-${{ github.run_number }}"
+          COMMIT_MSG=$(git log -1 --pretty=%s)
 
-      - name: Build extension zip
-        run: |
-          STAGE="feedwatch"
+          STAGE=feedwatch
           mkdir -p "$STAGE"
           cp manifest.json background.js parser.js store.js \
             popup.html popup.css popup.js LICENSE README.md "$STAGE/"
           cp -R icons "$STAGE/icons"
           zip -r feedwatch.zip "$STAGE"
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.meta.outputs.tag }}
-          name: FeedWatch ${{ steps.meta.outputs.version }}
-          body: |
-            **FeedWatch ${{ steps.meta.outputs.version }}** (build ${{ github.run_number }})
+          NOTES=$(cat <<EOF
+          **FeedWatch ${VERSION}** (build ${{ github.run_number }})
 
-            Commit: ${{ steps.meta.outputs.short_sha }} — ${{ github.event.head_commit.message }}
+          Commit: ${SHORT_SHA} — ${COMMIT_MSG}
 
-            ### Install
-            1. Download **feedwatch.zip** (not the Source code archives)
-            2. Unzip it
-            3. Chrome → `chrome://extensions` → Developer mode → **Load unpacked** → select the `feedwatch` folder
-          files: feedwatch.zip
-          make_latest: true
-          fail_on_unmatched_files: true
+          ### Install
+          1. Download **feedwatch.zip** (not the Source code archives)
+          2. Unzip it
+          3. Chrome → \`chrome://extensions\` → Developer mode → **Load unpacked** → select the \`feedwatch\` folder
+          EOF
+          )
+
+          # Trim accidental leading spaces from the heredoc above
+          NOTES=$(printf '%s\n' "$NOTES" | sed 's/^          //')
+
+          gh release create "$TAG" feedwatch.zip \
+            --title "FeedWatch ${VERSION}" \
+            --notes "$NOTES" \
+            --latest \
+            --target "$GITHUB_SHA"
