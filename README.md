@@ -7,6 +7,17 @@ lives in `chrome.storage.local` on your machine.
 
 ## Install (unpacked)
 
+### From a release (recommended)
+
+1. Download `feedwatch.zip` from the [latest release](https://github.com/adriano-kaiser/feedwatch/releases/latest)
+2. Unzip it
+3. Open `chrome://extensions`
+4. Turn on **Developer mode** (top right)
+5. Click **Load unpacked** and select the unzipped `feedwatch-*` folder
+6. Pin the FeedWatch icon so you can see the badge
+
+### From source
+
 1. Open `chrome://extensions`
 2. Turn on **Developer mode** (top right)
 3. Click **Load unpacked** and select this folder

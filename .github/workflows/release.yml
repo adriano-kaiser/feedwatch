@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Read version
+        id: meta
+        run: |
+          VERSION=$(jq -r .version manifest.json)
+          SHORT_SHA="${GITHUB_SHA::7}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${VERSION}-${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Build extension zip
+        run: |
+          STAGE="feedwatch-${{ steps.meta.outputs.version }}"
+          mkdir -p "$STAGE"
+          cp manifest.json background.js parser.js store.js \
+            popup.html popup.css popup.js LICENSE README.md "$STAGE/"
+          cp -R icons "$STAGE/icons"
+          zip -r "feedwatch-${{ steps.meta.outputs.version }}.zip" "$STAGE"
+          # Also ship a stable filename for the latest download link
+          cp "feedwatch-${{ steps.meta.outputs.version }}.zip" feedwatch.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: FeedWatch ${{ steps.meta.outputs.version }}
+          body: |
+            **FeedWatch ${{ steps.meta.outputs.version }}** (build ${{ github.run_number }})
+
+            Commit: ${{ steps.meta.outputs.short_sha }} — ${{ github.event.head_commit.message }}
+
+            ### Install
+            1. Download `feedwatch.zip` (or the versioned zip)
+            2. Unzip it
+            3. Chrome → `chrome://extensions` → Developer mode → **Load unpacked** → select the unzipped folder
+          files: |
+            feedwatch.zip
+            feedwatch-${{ steps.meta.outputs.version }}.zip
+          make_latest: true
+          fail_on_unmatched_files: true
