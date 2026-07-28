@@ -13,6 +13,7 @@ import {
   setFeedMeta,
   mergeEntries,
   unreadCount,
+  resetEntries,
 } from "./store.js";
 
 const ALARM_NAME = "feedwatch-refresh";
@@ -40,7 +41,7 @@ chrome.runtime.onStartup.addListener(async () => {
 async function migrate() {
   const { schemaVersion } = await chrome.storage.local.get("schemaVersion");
   if (schemaVersion !== SCHEMA) {
-    await chrome.storage.local.set({ entries: [], schemaVersion: SCHEMA });
+    await resetEntries(SCHEMA);
   }
 }
 

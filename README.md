@@ -80,3 +80,7 @@ desktop notifications.
 | `store.js` | `chrome.storage.local` data layer |
 | `popup.html` / `popup.css` / `popup.js` | The reader UI |
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
+
