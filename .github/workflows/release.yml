@@ -26,14 +26,12 @@ jobs:
 
       - name: Build extension zip
         run: |
-          STAGE="feedwatch-${{ steps.meta.outputs.version }}"
+          STAGE="feedwatch"
           mkdir -p "$STAGE"
           cp manifest.json background.js parser.js store.js \
             popup.html popup.css popup.js LICENSE README.md "$STAGE/"
           cp -R icons "$STAGE/icons"
-          zip -r "feedwatch-${{ steps.meta.outputs.version }}.zip" "$STAGE"
-          # Also ship a stable filename for the latest download link
-          cp "feedwatch-${{ steps.meta.outputs.version }}.zip" feedwatch.zip
+          zip -r feedwatch.zip "$STAGE"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -46,11 +44,9 @@ jobs:
             Commit: ${{ steps.meta.outputs.short_sha }} — ${{ github.event.head_commit.message }}
 
             ### Install
-            1. Download `feedwatch.zip` (or the versioned zip)
+            1. Download **feedwatch.zip** (not the Source code archives)
             2. Unzip it
-            3. Chrome → `chrome://extensions` → Developer mode → **Load unpacked** → select the unzipped folder
-          files: |
-            feedwatch.zip
-            feedwatch-${{ steps.meta.outputs.version }}.zip
+            3. Chrome → `chrome://extensions` → Developer mode → **Load unpacked** → select the `feedwatch` folder
+          files: feedwatch.zip
           make_latest: true
           fail_on_unmatched_files: true

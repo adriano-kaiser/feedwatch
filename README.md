@@ -13,7 +13,7 @@ lives in `chrome.storage.local` on your machine.
 2. Unzip it
 3. Open `chrome://extensions`
 4. Turn on **Developer mode** (top right)
-5. Click **Load unpacked** and select the unzipped `feedwatch-*` folder
+5. Click **Load unpacked** and select the unzipped `feedwatch` folder
 6. Pin the FeedWatch icon so you can see the badge
 
 ### From source
