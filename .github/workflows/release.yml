@@ -12,15 +12,14 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
       - name: Package and publish release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-
-          git clone --depth 1 --branch "${GITHUB_REF_NAME}" \
-            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" src
-          cd src
 
           VERSION=$(jq -r .version manifest.json)
           SHORT_SHA="${GITHUB_SHA::7}"
@@ -45,8 +44,6 @@ jobs:
           3. Chrome → \`chrome://extensions\` → Developer mode → **Load unpacked** → select the \`feedwatch\` folder
           EOF
           )
-
-          # Trim accidental leading spaces from the heredoc above
           NOTES=$(printf '%s\n' "$NOTES" | sed 's/^          //')
 
           gh release create "$TAG" feedwatch.zip \
